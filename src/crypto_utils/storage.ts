@@ -2,9 +2,9 @@ import { openDB, type IDBPDatabase } from "idb";
 import { bufferToBase64, base64ToBuffer } from "./utils";
 
 interface StoredKeyRecord {
-	wrappedKey: string; // Base64
-	salt: string; // Base64
-	iv: string; // Base64
+	wrappedKey: string;
+	salt: string;
+	iv: string;
 }
 
 const DB_NAME = "whisperbox-keys";

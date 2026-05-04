@@ -1,5 +1,3 @@
-// API Response Types
-
 export interface UserProfile {
 	id: string;
 	username: string;
@@ -41,8 +39,6 @@ export interface ConversationSummary {
 	last_message_at: string;
 }
 
-// API Request Types
-
 export interface RegisterRequest {
 	username: string;
 	display_name: string;
@@ -57,13 +53,11 @@ export interface LoginRequest {
 	password: string;
 }
 
-//  Message Types
-
 export interface EncryptedMessagePayload {
 	ciphertext: string;
 	iv: string;
 	encryptedKey: string;
-	encryptedKeyForSelf: string; 
+	encryptedKeyForSelf: string;
 }
 
 export interface SendMessageRequest {
