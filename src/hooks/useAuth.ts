@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { triggerAuthSync } from "@/context/AuthContext";
 import { apiRegister, apiLogin, apiLogout } from "@/lib/api";
 import {
 	setSession,
@@ -75,6 +76,7 @@ export function useAuth() {
 				privateKey: keyPair.privateKey,
 			});
 
+			triggerAuthSync();
 			router.push("/inbox");
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Registration failed");
@@ -123,6 +125,7 @@ export function useAuth() {
 				privateKey,
 			});
 
+			triggerAuthSync();
 			router.push("/inbox");
 		} catch (err) {
 			const message = err instanceof Error ? err.message : "Login failed";
