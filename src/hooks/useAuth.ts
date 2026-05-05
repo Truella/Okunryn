@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { triggerAuthSync } from "@/context/AuthContext";
 import { apiRegister, apiLogin, apiLogout } from "@/lib/api";
+import { toUserMessage } from "@/lib/errors";
 import {
 	setSession,
 	clearSession,
@@ -79,7 +80,7 @@ export function useAuth() {
 			triggerAuthSync();
 			router.push("/inbox");
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "Registration failed");
+			setError(toUserMessage(err));
 		} finally {
 			setLoading(false);
 		}
@@ -128,11 +129,7 @@ export function useAuth() {
 			triggerAuthSync();
 			router.push("/inbox");
 		} catch (err) {
-			const message = err instanceof Error ? err.message : "Login failed";
-			const isWrongPassword =
-				message.toLowerCase().includes("operation") ||
-				message.toLowerCase().includes("decrypt");
-			setError(isWrongPassword ? "Incorrect password" : message);
+			setError(toUserMessage(err));
 		} finally {
 			setLoading(false);
 		}
