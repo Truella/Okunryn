@@ -4,14 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, Lock, LogOut, Moon, Sun } from "lucide-react";
-import { apiGetConversations, apiSearchUsers } from "@/lib/api";
+import { apiSearchUsers } from "@/lib/api";
 import { getAccessToken } from "@/lib/session";
 import { useAuthContext } from "@/context/AuthContext";
-import type { ConversationSummary, UserPublicInfo } from "@/types";
-
-interface ConversationListProps {
-	currentUserId: string;
-}
+import { useConversationsContext } from "@/context/ConversationsContext";
+import type { UserPublicInfo } from "@/types";
 
 function timeAgo(iso: string): string {
 	const diff = Date.now() - new Date(iso).getTime();
@@ -44,18 +41,15 @@ function Avatar({ name }: { name: string }) {
 	);
 }
 
-export default function ConversationList({
-	currentUserId,
-}: ConversationListProps) {
+export default function ConversationList() {
 	const { logout } = useAuthContext();
+	const { conversations, loading } = useConversationsContext();
 	const pathname = usePathname();
-	const [conversations, setConversations] = useState<ConversationSummary[]>([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchResults, setSearchResults] = useState<UserPublicInfo[] | null>(
 		null,
 	);
 	const [searching, setSearching] = useState(false);
-	const [loading, setLoading] = useState(true);
 	const [theme, setTheme] = useState<"light" | "dark">("dark");
 
 	useEffect(() => {
@@ -64,22 +58,6 @@ export default function ConversationList({
 		setTheme(initialTheme);
 		document.documentElement.classList.toggle("dark", initialTheme === "dark");
 	}, []);
-
-	useEffect(() => {
-		void currentUserId;
-		async function load() {
-			const token = getAccessToken();
-			if (!token) return;
-			try {
-				const data = await apiGetConversations(token);
-				setConversations(data);
-			} catch {
-			} finally {
-				setLoading(false);
-			}
-		}
-		void load();
-	}, [currentUserId]);
 
 	useEffect(() => {
 		if (!searchQuery.trim()) {
@@ -117,7 +95,7 @@ export default function ConversationList({
 
 	return (
 		<aside
-			className="flex h-screen w-fullshrink-0 flex-col md:w-72 md:min-w-72 md:max-w-72"
+			className="flex h-screen w-full shrink-0 flex-col md:w-72 md:min-w-72 md:max-w-72"
 			style={{
 				backgroundColor: "var(--bg-soft)",
 				borderRight: "1px solid var(--border)",
@@ -203,7 +181,10 @@ export default function ConversationList({
 						{searchResults.map((user) => (
 							<Link
 								key={user.id}
-								href={`/chat/${user.id}`}
+								href={{
+									pathname: `/chat/${user.id}`,
+									query: { name: user.display_name },
+								}}
 								onClick={() => setSearchQuery("")}
 								className="mx-2 mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all"
 								style={{
@@ -292,7 +273,10 @@ export default function ConversationList({
 					conversations.map((conv) => (
 						<Link
 							key={conv.user_id}
-							href={`/chat/${conv.user_id}`}
+							href={{
+								pathname: `/chat/${conv.user_id}`,
+								query: { name: conv.display_name },
+							}}
 							className="mx-2 mb-1 flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all"
 							style={{
 								backgroundColor:

@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { use } from "react";
+import { useSearchParams } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
+import { useConversationsContext } from "@/context/ConversationsContext";
 import ChatThread from "@/components/chat/ChatThread";
-import ConversationList from "@/components/chat/ConversationList";
 import { apiSearchUsers } from "@/lib/api";
 import { getAccessToken } from "@/lib/session";
 
@@ -14,33 +15,56 @@ export default function ChatPage({
 	params: Promise<{ userId: string }>;
 }) {
 	const { userId } = use(params);
+	const searchParams = useSearchParams();
 	const { user } = useAuthContext();
-	const [recipientName, setRecipientName] = useState("...");
+	const { conversations, loading: conversationsLoading } = useConversationsContext();
+	const [recipientName, setRecipientName] = useState<string | null>(null);
+	const recipientNameFromQuery = searchParams.get("name");
 
 	useEffect(() => {
+		if (recipientNameFromQuery) {
+			setRecipientName(recipientNameFromQuery);
+			return;
+		}
+
+		if (conversationsLoading) {
+			return;
+		}
+
+		const fromConversations = conversations.find(
+			(conv) => conv.user_id === userId,
+		)?.display_name;
+		if (fromConversations) {
+			setRecipientName(fromConversations);
+			return;
+		}
+
 		async function fetchName() {
 			const token = getAccessToken();
-			if (!token) return;
+			if (!token) {
+				setRecipientName("Unknown user");
+				return;
+			}
 			try {
 				const results = await apiSearchUsers(userId, token);
 				const match = results.find((u) => u.id === userId);
-				if (match) setRecipientName(match.display_name);
-			} catch {}
+				setRecipientName(match?.display_name ?? "Unknown user");
+			} catch {
+				setRecipientName("Unknown user");
+			}
 		}
 
 		void fetchName();
-	}, [userId]);
+	}, [conversations, conversationsLoading, recipientNameFromQuery, userId]);
 
 	if (!user) return null;
+	if (!recipientName) return null;
 
 	return (
-		<>
-			<ConversationList currentUserId={user.userId} />
-			<ChatThread
-				recipientId={userId}
-				recipientName={recipientName}
-				currentUser={user}
-			/>
-		</>
+		<ChatThread
+			recipientId={userId}
+			recipientName={recipientName}
+			currentUser={user}
+		/>
 	);
 }

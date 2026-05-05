@@ -76,10 +76,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await apiGetMe(access_token);
         const stored = await loadWrappedPrivateKey();
         if (!stored) {
-          throw new Error("No key on device");
+          clearSession();
+          setUser(null);
+          return;
         }
         updateAccessToken(access_token);
-        throw new Error("Password required to unlock keys");
+        // Keep refresh token and wait for user login to unlock private key.
+        setUser(null);
       } catch {
         clearSession();
         setUser(null);

@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AuthProvider, useAuthContext } from "@/context/AuthContext";
 import { SocketProvider } from "@/context/SocketContext";
+import { ConversationsProvider } from "@/context/ConversationsContext";
+import ConversationList from "@/components/chat/ConversationList";
 import { Lock } from "lucide-react";
 
 function AppShell({ children }: { children: React.ReactNode }) {
 	const { user, initializing } = useAuthContext();
 	const router = useRouter();
+	const pathname = usePathname();
 
 	useEffect(() => {
 		const storedTheme = localStorage.getItem("theme");
@@ -67,14 +70,32 @@ function AppShell({ children }: { children: React.ReactNode }) {
 		return null;
 	}
 
+	const isChatRoute = pathname.startsWith("/chat/");
+
 	return (
 		<SocketProvider user={user}>
+			<ConversationsProvider>
 			<div
 				className="flex min-h-screen"
 				style={{ backgroundColor: "var(--bg)" }}
 			>
-				{children}
+				<div
+					className={
+						isChatRoute ? "hidden md:flex md:min-w-72 md:max-w-72" : "flex w-full md:w-auto md:min-w-72 md:max-w-72"
+					}
+				>
+					<ConversationList />
+				</div>
+
+				<div
+					className={
+						isChatRoute ? "flex min-w-0 flex-1" : "hidden min-w-0 flex-1 md:flex"
+					}
+				>
+					{children}
+				</div>
 			</div>
+			</ConversationsProvider>
 		</SocketProvider>
 	);
 }

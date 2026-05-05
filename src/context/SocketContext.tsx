@@ -120,6 +120,16 @@ export function SocketProvider({
             content,
             createdAt: raw.created_at,
           });
+          const threadUserId =
+            raw.from_user_id === user.userId ? raw.to_user_id : raw.from_user_id;
+          window.dispatchEvent(
+            new CustomEvent("conversation-updated", {
+              detail: {
+                userId: threadUserId,
+                at: raw.created_at,
+              },
+            }),
+          );
         } catch {
           addToThread({
             id: raw.id,
@@ -129,6 +139,16 @@ export function SocketProvider({
             createdAt: raw.created_at,
             decryptFailed: true,
           });
+          const threadUserId =
+            raw.from_user_id === user.userId ? raw.to_user_id : raw.from_user_id;
+          window.dispatchEvent(
+            new CustomEvent("conversation-updated", {
+              detail: {
+                userId: threadUserId,
+                at: raw.created_at,
+              },
+            }),
+          );
         }
       };
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Lock } from "lucide-react";
 import MessageBubble from "@/components/chat/MessageBubble";
 import ComposeBox from "@/components/chat/ComposeBox";
 import MessageListSkeleton from "@/components/chat/MessageListSkeleton";
@@ -53,6 +54,7 @@ export default function ChatThread({
 	recipientName,
 	currentUser,
 }: ChatThreadProps) {
+	const router = useRouter();
 	const bottomRef = useRef<HTMLDivElement>(null);
 	const [recipientPublicKey, setRecipientPublicKey] =
 		useState<CryptoKey | null>(null);
@@ -153,6 +155,14 @@ export default function ChatThread({
 					content,
 					createdAt: new Date().toISOString(),
 				});
+				window.dispatchEvent(
+					new CustomEvent("conversation-updated", {
+						detail: {
+							userId: recipientId,
+							at: new Date().toISOString(),
+						},
+					}),
+				);
 			} catch (err) {
 				setSendError(toUserMessage(err));
 			}
@@ -174,6 +184,14 @@ export default function ChatThread({
 				}}
 			>
 				<div className="flex items-center gap-3">
+					<button
+						type="button"
+						className="md:hidden"
+						onClick={() => router.push("/inbox")}
+						aria-label="Back to conversations"
+					>
+						<ArrowLeft className="h-5 w-5" style={{ color: "var(--text-primary)" }} />
+					</button>
 					<Avatar name={recipientName} />
 					<div>
 						<p

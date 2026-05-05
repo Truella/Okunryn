@@ -81,8 +81,8 @@ export default function RootPage() {
 					className="text-base md:text-lg max-w-xl leading-relaxed mb-10"
 					style={{ color: "var(--text-secondary)" }}
 				>
-					Okunryn uses military-grade encryption to ensure your conversations
-					are private by design — not by policy. No backdoors. No exceptions.
+					Your messages are end-to-end encrypted, so only you and the person
+					you are chatting with can read them.
 				</p>
 
 				{/* CTAs */}
