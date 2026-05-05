@@ -9,35 +9,38 @@ import { apiSearchUsers } from "@/lib/api";
 import { getAccessToken } from "@/lib/session";
 
 export default function ChatPage({
-  params,
+	params,
 }: {
-  params: Promise<{ userId: string }>;
+	params: Promise<{ userId: string }>;
 }) {
-  const { userId } = use(params);
-  const { user } = useAuthContext();
-  const [recipientName, setRecipientName] = useState("...");
+	const { userId } = use(params);
+	const { user } = useAuthContext();
+	const [recipientName, setRecipientName] = useState("...");
 
-  useEffect(() => {
-    async function fetchName() {
-      const token = getAccessToken();
-      if (!token) return;
-      try {
-        const results = await apiSearchUsers(userId, token);
-        const match = results.find((u) => u.id === userId);
-        if (match) setRecipientName(match.display_name);
-      } catch {
-      }
-    }
+	useEffect(() => {
+		async function fetchName() {
+			const token = getAccessToken();
+			if (!token) return;
+			try {
+				const results = await apiSearchUsers(userId, token);
+				const match = results.find((u) => u.id === userId);
+				if (match) setRecipientName(match.display_name);
+			} catch {}
+		}
 
-    void fetchName();
-  }, [userId]);
+		void fetchName();
+	}, [userId]);
 
-  if (!user) return null;
+	if (!user) return null;
 
-  return (
-    <>
-      <ConversationList currentUserId={user.userId} />
-      <ChatThread recipientId={userId} recipientName={recipientName} currentUser={user} />
-    </>
-  );
+	return (
+		<>
+			<ConversationList currentUserId={user.userId} />
+			<ChatThread
+				recipientId={userId}
+				recipientName={recipientName}
+				currentUser={user}
+			/>
+		</>
+	);
 }

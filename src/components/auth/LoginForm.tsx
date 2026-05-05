@@ -48,23 +48,26 @@ export default function LoginForm() {
 
   return (
     <AuthShell subtitle="Your keys. Your messages." securityNote="Private key never leaves this device.">
-      <form onSubmit={handleSubmit} noValidate className="flex w-full max-w-sm flex-col gap-6">
+      <form onSubmit={handleSubmit} noValidate className="flex w-full flex-col gap-5 sm:gap-6">
         <Input label="Username" type="text" autoComplete="username" autoCapitalize="none" placeholder="alice_92" value={form.username} onChange={handleChange("username")} onBlur={handleBlur("username")} error={touched.username ? errors.username : undefined} />
         <Input label="Password" type="password" autoComplete="current-password" placeholder="Your password" value={form.password} onChange={handleChange("password")} onBlur={handleBlur("password")} error={touched.password ? errors.password : undefined} />
 
-        <p className="-mt-2 text-xs text-[#3a3a3a]">
+        <p className="-mt-1 text-xs text-[var(--text-muted)]">
           ⚠ You must sign in from the device you registered on.
         </p>
 
-        {error && <p className="-mt-2 text-center text-sm text-[#ef4444]">{error}</p>}
+        {error && <p className="-mt-1 text-center text-sm text-[var(--danger)]">{error}</p>}
 
         <Button type="submit" loading={loading} className="mt-2">
           {loading ? "Unlocking keys..." : "Sign in"}
         </Button>
 
-        <p className="text-center text-sm text-[#a3a3a3]">
+        <p className="pt-1 text-center text-sm text-[var(--text-secondary)]">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-[#22c55e] transition-colors hover:text-[#16a34a]">
+          <Link
+            href="/register"
+            className="text-[var(--primary)] transition-colors hover:text-[var(--primary-soft)]"
+          >
             Create one →
           </Link>
         </p>

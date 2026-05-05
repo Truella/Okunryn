@@ -13,22 +13,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "WhisperBox",
+	title: "Okunryn",
 	description:
-		"End-to-end encrypted messaging. Only you can read your messages.",
+		"Private conversations, end-to-end encrypted. Only you can read your messages.",
 };
 
 export default function RootLayout({
 	children,
-}: Readonly<{
-	children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html
 			lang="en"
-			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
 		>
-			<body className="min-h-full flex flex-col bg-[#0a0a0a] text-[#f5f5f5]">
+			<body
+				className="min-h-full flex flex-col"
+				style={{ backgroundColor: "var(--bg)", color: "var(--text-primary)" }}
+			>
 				{children}
 			</body>
 		</html>

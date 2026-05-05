@@ -70,9 +70,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    async function restore() {
+    async function restore(token: string) {
       try {
-        const { access_token } = await apiRefreshToken(refreshToken);
+        const { access_token } = await apiRefreshToken(token);
         await apiGetMe(access_token);
         const stored = await loadWrappedPrivateKey();
         if (!stored) {
@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    void restore();
+    void restore(refreshToken);
   }, []);
 
   function syncUser() {

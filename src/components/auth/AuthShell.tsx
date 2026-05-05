@@ -13,19 +13,40 @@ export default function AuthShell({
   children,
 }: AuthShellProps) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#0a0a0a] px-6 py-12">
-      <div className="mb-10 flex flex-col items-center gap-3">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#1e1e1e] bg-[#111111]">
-          <Lock className="h-6 w-6 text-[#22c55e]" strokeWidth={1.5} />
+    <div className="flex flex-col w-full">
+      {/* Header */}
+      <div className="flex flex-col items-center gap-3 mb-8">
+        {/* Mobile only logo — hidden on lg since layout shows it */}
+        <div
+          className="lg:hidden w-12 h-12 rounded-xl flex items-center justify-center"
+          style={{ background: "var(--gradient)" }}
+        >
+          <Lock className="w-5 h-5 text-white" strokeWidth={2} />
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-[#f5f5f5]">WhisperBox</h1>
-        <p className="text-sm tracking-wide text-[#a3a3a3]">{subtitle}</p>
+
+        <h1
+          className="text-2xl font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Okunryn
+        </h1>
+        <p
+          className="text-sm text-center"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          {subtitle}
+        </p>
       </div>
 
-      {children}
+      {/* Form */}
+      <div className="w-full">{children}</div>
 
-      <div className="mt-12 flex items-center gap-2 text-xs text-[#3a3a3a]">
-        <ShieldCheck className="h-3.5 w-3.5" />
+      {/* Security note */}
+      <div
+        className="mt-8 flex items-center justify-center gap-2 text-xs"
+        style={{ color: "var(--text-muted)" }}
+      >
+        <ShieldCheck className="h-3.5 w-3.5 flex-shrink-0" />
         <span>{securityNote}</span>
       </div>
     </div>
