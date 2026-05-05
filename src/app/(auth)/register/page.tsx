@@ -1,9 +1,7 @@
-import React from 'react'
+import RegisterForm from "@/components/auth/RegisterForm";
 
-export default function page() {
-  return (
-    <div>
-      Register
-    </div>
-  )
+export const metadata = { title: "Create account — WhisperBox" };
+
+export default function RegisterPage() {
+  return <RegisterForm />;
 }

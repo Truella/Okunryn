@@ -1,9 +1,7 @@
-import React from 'react'
+import LoginForm from "@/components/auth/LoginForm";
 
-export default function page() {
-  return (
-    <div>
-      Login
-    </div>
-  )
+export const metadata = { title: "Sign in — WhisperBox" };
+
+export default function LoginPage() {
+  return <LoginForm />;
 }
